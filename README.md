@@ -1,199 +1,117 @@
 # MAGMA v2: Multistep AlGorithMic ReAsoning Benchmark
 
 ## Paper
-
 **Are Large-Language Models Graph Algorithmic Reasoners?** [[pdf](https://arxiv.org/pdf/2410.22597)]
 
 ## Summary
 
-**MAGMA v2** extends and refines the original MAGMA benchmark to evaluate how large language models (LLMs) perform on classical graph algorithms with explicit intermediate-step reasoning. Building on lessons learned from the first iteration, MAGMA v2 focuses on improved data generation, structured prompting, and comprehensive metrics to uncover the strengths and limitations of LLMs on fundamental graph problems:
-
-- **Breadth-First Search (BFS)**
-- **Depth-First Search (DFS)**
-- **Dijkstra’s Shortest Path**
-- **Floyd–Warshall All-Pairs Shortest Paths**
-- **Prim’s Minimum Spanning Tree**
-
-LLMs often struggle with multi-step structured tasks—especially those involving graph-based reasoning. MAGMA v2 quantifies their performance through intermediate steps and final results, providing insights into the models’ capabilities and deficiencies.
-
-> **We are actively updating this benchmark!** Please reach out to us at `ataylor2@cs.ucla.edu` or open an issue with any update requests or bug reports.
+**MAGMA v2** evaluates large language models (LLMs) on five classical graph algorithms—BFS, DFS, Dijkstra’s, Floyd–Warshall, and Prim’s MST—with an emphasis on **multistep reasoning** and **intermediate-step accuracy**. Despite progress in LLMs, structured tasks like graph algorithms remain challenging. This benchmark highlights where LLMs excel and where they fall short.
 
 ---
 
 ## Features
-
-- **Comprehensive Benchmark:** Evaluates LLM performance on five classical graph algorithms.
-- **Intermediate Steps Evaluation:** Focuses on the accuracy of chain-of-thought or step-by-step reasoning.
-- **Multiple Graph Sources:** Integrates both synthetic graphs and real-world graph datasets.
-- **Advanced Prompting Techniques:** Explores advanced algorithmic instructions, chain-of-thought, and self-check strategies.
-- **Easy Extensibility:** Add new algorithms, datasets, or evaluation routines with minimal code changes.
+- **Five Graph Algorithms**: BFS, DFS, Dijkstra’s, Floyd–Warshall, and MST (Prim).
+- **Intermediate Steps**: Measure chain-of-thought accuracy, not just final outputs.
+- **Multiple Sources**: Synthetic and real-world graph data.
+- **Flexible Prompting**: Chain-of-thought or instruction-based queries.
+- **Modular & Extensible**: Easy to add new tasks or adapt data generation.
 
 ---
 
-## Installation & Package Setup
+## Installation
 
-### Prerequisites
-- **Python 3.10 or higher**
-- (Optional) **Conda** for environment management
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/ataylor24/MAGMA_v2.git
-cd MAGMA_v2
-```
-
-### Install or Set Up the Package
-
-You can install MAGMA v2 as a standard Python package:
-
-```bash
-pip install -e .
-```
-
-This enables an “editable” install, so any local changes to the code are immediately available.
-
-Alternatively, if you prefer to use **Conda**, you can:
-
-1. Create an environment using the included `environment.yml`:
+1. **Clone the Repo**:
    ```bash
-   conda env create --file environment.yml
+   git clone https://github.com/ataylor24/MAGMA_v2.git
+   cd MAGMA_v2
    ```
-2. Activate the environment:
-   ```bash
-   conda activate nar2
-   ```
-3. Install the package:
+2. **Install** (editable mode recommended):
    ```bash
    pip install -e .
    ```
 
----
-
-### Prerequisites
-- **Python 3.10 or higher**
-- (Optional) **Conda** for environment management
-
-### Clone the Repository
-
-```bash
-git clone https://github.com/ataylor24/MAGMA_v2.git
-cd MAGMA_v2
-```
-
-### Create a Conda Environment
-
-We provide an example environment file (`environment.yml`) to ensure reproducible setups:
-
+**Conda users**:
 ```bash
 conda env create --file environment.yml
-```
-
-### Activate the Conda Environment
-
-```bash
 conda activate nar2
+pip install -e .
 ```
 
 ---
 
-## Training Baseline Models
+## Data Generation
 
-We include scripts in the `run_scripts/` directory as a reference for how to train and evaluate baseline models on MAGMA v2:
-
+**Standard usage for all algorithms**:
 ```bash
-bash run_scripts/bfs_CoT.sh
+python magma_generation.py all
 ```
+This runs BFS, DFS, Dijkstra’s, Floyd–Warshall, and Prim’s MST with default settings in `globals.py`. Adjust via CLI flags as needed.
 
-Feel free to modify the scripts for different algorithms (DFS, Dijkstra, etc.) or custom hyperparameters.
+### Key Defaults (in `globals.py`)
+- **`TRAIN_TEST_SPLIT`** maps graph sizes to train/test counts.
+- **`_OOD_TRAIN_LENGTHS`** & **`_OOD_EVAL_LENGTHS`** for out-of-distribution sizes.
+- **`OUTPUT_FORMATS`**: e.g. `cot_analysis`, `magma`, etc.
+- **`FORMATTED_ALGORITHMS`**: instructions/output formatting for each algorithm.
+- **`COT_PROMPT`**: chain-of-thought prompt template.
 
----
-
-## Running Inference with Trained Models
-
-To evaluate a trained model on a particular algorithm, use the scripts in `inference_scripts/`:
-
+### Example Usage
 ```bash
-bash inference_scripts/bfs_CoT.sh
+python sample_data.py bfs \
+  --graph_sizes 5 7 10 \
+  --seed 1234 \
+  --ood_generation False \
+  --output_dir /path/to/output \
+  --output_formats cot_analysis
 ```
-
-By default, these scripts assume you have a checkpoint and configuration file with the same naming conventions as in `run_scripts/`.
-
----
-
-## Configuration
-
-You can customize the model training and inference settings in `configuration_example/config_qlora.yaml` (or similar config files). This includes:
-
-- Model architecture and size
-- Optimizer, learning rate, and batch size
-- Training schedules and epochs
-- Evaluation metrics and intervals
+- `bfs` can be replaced with `dfs`, `dijkstra`, `floyd_warshall`, `mst_prim`, or `all`.
+- `graph_sizes` sets node counts.
+- `ood_generation` enables out-of-distribution sampling.
+- `output_formats` toggles data format (chain-of-thought, etc.).
 
 ---
 
 ## Performance Metrics
-
-MAGMA v2 supports multiple metrics for evaluating LLM reasoning:
-
-- **Exact Match Accuracy**  
-  Checks if the final output exactly matches the expected solution (primary metric in the paper).
-- **F1 Score**  
-  Measures partial correctness of the final output, giving partial credit.
-
-For each of the above, we also track:
-
-- **Intermediate Steps Accuracy**  
-  Evaluates correctness of step-by-step reasoning.
-- **Final Step Accuracy**  
-  Evaluates correctness solely on the concluding step.
-- **Trajectory Accuracy**  
-  Evaluates correctness over the entire chain-of-thought (all steps + final).
-- **Independent Accuracy**  
-  Evaluates performance of each inference step independently, ignoring the chain-of-thought.
+- **Exact Match Accuracy**: Matches final solution exactly.
+- **F1 Score**: Partial correctness.
+- **Intermediate Steps**: Evaluates step-by-step reasoning.
+- **Final Step**: Only the final result.
+- **Trajectory**: Entire chain-of-thought.
+- **Independent**: Each step treated independently.
 
 ---
 
 ## Contributing
+1. **Fork** the repo.
+2. **Create** a branch.
+3. **Commit** changes.
+4. **Push** the branch.
+5. **Open** a Pull Request.
 
-We welcome contributions and improvements:
-
-1. **Fork** the repository.
-2. **Create a new branch** (`git checkout -b feature-branch`).
-3. **Commit your changes** (`git commit -am 'Add new feature'`).
-4. **Push** to your branch (`git push origin feature-branch`).
-5. Open a **Pull Request**.
-
-Check the `data_generation/` folder for more details on generating tasks, and please run `pytest` to verify correctness before submitting.
+Please run `pytest` before submitting.
 
 ---
 
 ## Reproducibility
-
-- **Seed:** 100898 (used for consistent graph generation and model initialization)
-- **BFS Llama3 hyperparameters**: `_r_` and `_alpha_` = 8
-- Other baseline data generation and training use default settings.
+- **Seed**: `100898` ensures consistent data generation.
+- Other defaults in code or config.
 
 ---
 
 ## License
-
-This project is licensed under the [MIT License](LICENSE). © 2025 Alexander Taylor
+MIT License © 2025 Alexander Taylor
 
 ---
 
 ## Acknowledgements
-
-- **Data** partially adapted from the [CLRS benchmark](https://github.com/google-deepmind/clrs).
-- **Model training** adapted from the [Hugging Face Alignment Handbook](https://github.com/huggingface/alignment-handbook.git).
-
----
-
-## Contact Information
-
-For questions, issues, or feedback, please open an issue or reach out via email at `ataylor2@cs.ucla.edu`.
+- Data adapted from [CLRS benchmark](https://github.com/google-deepmind/clrs)
+- Model training adapted from [Hugging Face Alignment Handbook](https://github.com/huggingface/alignment-handbook.git)
 
 ---
 
-Thank you for using **MAGMA v2**! We hope this benchmark furthers the understanding and capabilities of large language models in structured, algorithmic reasoning tasks.
+## Contact
+Questions/feedback? Open an issue or email `ataylor2@cs.ucla.edu`.
+
+---
+
+**Thank you for using MAGMA v2!** Accelerate research into LLM-based graph algorithmic reasoning.
 
