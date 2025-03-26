@@ -1,0 +1,19 @@
+Metadata-Version: 2.2
+Name: magma
+Version: 0.1.0
+Summary: Setup magma benchmark
+Author: Your Name
+Requires-Python: >=3.7
+Requires-Dist: torch
+Requires-Dist: transformers
+Requires-Dist: datasets
+Requires-Dist: pyyaml
+Requires-Dist: huggingface_hub
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: accelerate
+Dynamic: author
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

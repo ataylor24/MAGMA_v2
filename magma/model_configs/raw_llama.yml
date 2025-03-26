@@ -1,0 +1,12 @@
+model_name: "meta-llama/Meta-Llama-3-8B-Instruct"
+device_map:
+  "": "cuda:0"
+prompt_data: "/local/ataylor2/algorithmic_reasoning/PBR/magma_data/cot_analysis/IO/test"
+max_length: 2000
+output_json: "/local/ataylor2/algorithmic_reasoning/PBR/magma_data/cot_analysis/IO/llama_inference.json"
+lora_base_dir: "/local/ataylor2/algorithmic_reasoning/PBR/magma_data/cot_analysis/IO" 
+target_task: "bfs"                    
+graph_size: "ood"                       
+chat_type: "chat_llama"             
+reasoning_strategy: "IO"                   
+openai_engine: "openai" 

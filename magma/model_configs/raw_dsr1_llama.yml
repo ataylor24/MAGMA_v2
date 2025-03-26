@@ -1,0 +1,11 @@
+model_name: "deepseek-ai/DeepSeek-R1-Distill-Llama-8B"
+device_map:
+  "": "cuda:3"
+prompt_jsons:
+  - "/local/ataylor2/algorithmic_reasoning/bfs/ood/llm_data/chat_deepseek_r1/IO/test.json"
+  - "/local/ataylor2/algorithmic_reasoning/dfs/ood/llm_data/chat_deepseek_r1/IO/test.json"
+  - "/local/ataylor2/algorithmic_reasoning/dijkstra/ood/llm_data/chat_deepseek_r1/IO/test.json"
+  - "/local/ataylor2/algorithmic_reasoning/floyd_warshall/ood/llm_data/chat_deepseek_r1/IO/test.json"
+  - "/local/ataylor2/algorithmic_reasoning/mst_prim/ood/llm_data/chat_deepseek_r1/IO/test.json"
+max_length: 2000
+output_json: "/local/ataylor2/algorithmic_reasoning/COT_analysis/raw_dsr1_llama.json"
