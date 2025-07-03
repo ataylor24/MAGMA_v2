@@ -1,7 +1,4 @@
-# MAGMA v2: Multistep Algorithmic Reasoning Benchmark
-
-## Paper
-**Are Large-Language Models Graph Algorithmic Reasoners?** [[pdf](https://arxiv.org/pdf/2410.22597)]
+# MAGMA: Multistep Algorithmic Reasoning Benchmark
 
 ## Summary
 
@@ -105,11 +102,6 @@ MIT License © 2025 Alexander Taylor
 ## Acknowledgements
 - Data adapted from [CLRS benchmark](https://github.com/google-deepmind/clrs)
 - Model training adapted from [Hugging Face Alignment Handbook](https://github.com/huggingface/alignment-handbook.git)
-
----
-
-## Contact
-Questions/feedback? Open an issue or email `ataylor2@cs.ucla.edu`.
 
 ---
 
